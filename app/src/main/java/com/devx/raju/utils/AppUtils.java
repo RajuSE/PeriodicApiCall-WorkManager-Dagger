@@ -89,7 +89,7 @@ public class AppUtils {
                                          String language) {
         if(LANGUAGE_COLOR_MAP.containsKey(language))
             return ContextCompat.getColor(context, LANGUAGE_COLOR_MAP.get(language));
-        else return ContextCompat.getColor(context, R.color.colorPrimary);
+        else return ContextCompat.getColor(context, R.color.color_purple);
     }
 
     public static void updateStatusBarColor(Activity activity,

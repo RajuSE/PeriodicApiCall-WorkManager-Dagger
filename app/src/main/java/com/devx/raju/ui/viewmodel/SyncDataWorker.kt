@@ -51,7 +51,7 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
 
                 val let: Result = d?.let {
                     Log.i(TAG, "fetching SUCCESS")
-                    WorkerUtils.makeStatusNotification("New Data Available Pg:"+page, Constants.NOTIFICATION_TITLE, applicationContext);
+                    WorkerUtils.makeStatusNotification("New Data for Pg:"+page, Constants.NOTIFICATION_TITLE, applicationContext);
                     return@let Result.success();
                 }
                         ?: Result.retry()
