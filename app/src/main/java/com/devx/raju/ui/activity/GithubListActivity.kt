@@ -27,6 +27,7 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     lateinit var binding: ActivityRepoListBinding
