@@ -14,18 +14,18 @@ class GithubRepository(private val githubDao: GithubDao, private val githubApiSe
     suspend fun getRemoteData(page: Long): List<GithubEntity> {
         val resp = githubApiService.fetchRepositories(AppConstants.QUERY_SORT, AppConstants.QUERY_ORDER, page)
         saveApiDataToDb(resp, page)
-        return resp.items
+        return resp.items!!
     }
 
     fun getLocalData() = githubDao.getRepositories()
 
     fun saveApiDataToDb(item: GithubApiResponse, page: Long) {
         var list = item.items
-        for (githubEntity in list) {
+        for (githubEntity in list!!) {
             githubEntity.page = page
             githubEntity.totalPages = item.totalCount
         }
-        githubDao.insertRepositories(list)
+        githubDao.insertRepositories(list!!)
     }
 
 

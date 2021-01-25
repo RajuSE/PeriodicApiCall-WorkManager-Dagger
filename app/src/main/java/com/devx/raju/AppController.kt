@@ -25,8 +25,8 @@ class AppController : Application(), HasActivityInjector {
         super.onCreate()
         instance = this
         DaggerAppComponent.builder()
-                .application(this)
-                .build()
+                .application(this)!!
+                .build()!!
                 .inject(this)
 
         WorkManager.initialize(this, Configuration.Builder().setWorkerFactory(workerFactory).build())

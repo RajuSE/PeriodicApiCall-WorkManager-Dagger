@@ -20,18 +20,15 @@ import com.devx.raju.ui.adapter.GithubListAdapter
 import com.devx.raju.ui.custom.recyclerview.RecyclerLayoutClickListener
 import com.devx.raju.ui.viewmodel.GithubListViewModel
 import com.devx.raju.ui.viewmodel.SyncDataWorker
-import com.devx.raju.utils.AnimUtils
 import com.devx.raju.utils.AppUtils
 import com.devx.raju.utils.NavigatorUtils
 import com.devx.raju.utils.ShareUtils
 import dagger.android.AndroidInjection
-import java.util.*
 import javax.inject.Inject
 
 class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
-    @JvmField
     @Inject
-    var viewModelFactory: ViewModelFactory? = null
+    lateinit var viewModelFactory: ViewModelFactory
     lateinit var binding: ActivityRepoListBinding
     var githubListViewModel: GithubListViewModel? = null
     var githubListAdapter: GithubListAdapter? = null
@@ -115,13 +112,13 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         binding!!.viewLoader.rootView.visibility = View.GONE
     }
 
-    private fun animateView(repositories: List<GithubEntity?>) {
+    private fun animateView(repositories: List<GithubEntity>) {
         hideLoader()
         displayDataView(repositories)
         binding!!.recyclerView.scheduleLayoutAnimation()
     }
 
-    private fun displayDataView(repositories: List<GithubEntity?>) {
+    private fun displayDataView(repositories: List<GithubEntity>) {
         binding!!.viewEmpty.emptyContainer.visibility = View.GONE
         githubListAdapter!!.setItems(repositories)
     }

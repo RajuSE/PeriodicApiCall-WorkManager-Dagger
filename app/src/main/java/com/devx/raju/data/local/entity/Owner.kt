@@ -1,0 +1,41 @@
+package com.devx.raju.data.local.entity
+
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.room.Entity
+import com.google.gson.annotations.SerializedName
+
+@Entity
+class Owner : Parcelable {
+    var login: String? = null
+
+    @SerializedName("avatar_url")
+    var avatarUrl: String? = null
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(login)
+        dest.writeString(avatarUrl)
+    }
+
+    constructor() {}
+    protected constructor(`in`: Parcel) {
+        login = `in`.readString()
+        avatarUrl = `in`.readString()
+    }
+
+    companion object {
+        val CREATOR: Parcelable.Creator<Owner> = object : Parcelable.Creator<Owner> {
+            override fun createFromParcel(source: Parcel): Owner? {
+                return Owner(source)
+            }
+
+            override fun newArray(size: Int): Array<Owner?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+}
