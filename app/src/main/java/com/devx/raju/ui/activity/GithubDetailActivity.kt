@@ -45,13 +45,13 @@ class GithubDetailActivity : AppCompatActivity() {
     }
 
     private fun updateColorTheme() {
-        val bgColor = AppUtils.getColorByLanguage(applicationContext, githubEntity!!.language)
-        binding!!.appBarLayout.setBackgroundColor(bgColor)
-        binding!!.mainToolbar.toolbar.setBackgroundColor(bgColor)
-        binding!!.btnShare.setTextColor(bgColor)
-        binding!!.itemImgLanguage.setImageDrawable(AppUtils.updateGradientDrawableColor(applicationContext, bgColor))
-        binding!!.btnVisit.setBackgroundDrawable(AppUtils.updateStateListDrawableColor(resources.getDrawable(R.drawable.btn_visit), bgColor))
-        binding!!.btnShare.setBackgroundDrawable(AppUtils.updateStateListDrawableStrokeColor(resources.getDrawable(R.drawable.btn_share), bgColor))
+        val bgColor = AppUtils.getColorByLanguage(applicationContext, githubEntity.language)
+        binding.appBarLayout.setBackgroundColor(bgColor)
+        binding.mainToolbar.toolbar.setBackgroundColor(bgColor)
+        binding.btnShare.setTextColor(bgColor)
+        binding.itemImgLanguage.setImageDrawable(AppUtils.updateGradientDrawableColor(applicationContext, bgColor))
+        binding.btnVisit.setBackgroundDrawable(AppUtils.updateStateListDrawableColor(resources.getDrawable(R.drawable.btn_visit), bgColor))
+        binding.btnShare.setBackgroundDrawable(AppUtils.updateStateListDrawableStrokeColor(resources.getDrawable(R.drawable.btn_share), bgColor))
         AppUtils.updateStatusBarColor(this, bgColor)
     }
 }

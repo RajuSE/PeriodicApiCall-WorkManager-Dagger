@@ -1,10 +1,12 @@
 package com.devx.raju.data.repository
 
+import android.util.Log
 import com.devx.raju.AppConstants
 import com.devx.raju.data.local.dao.GithubDao
 import com.devx.raju.data.local.entity.GithubEntity
 import com.devx.raju.data.remote.api.GithubApiService
 import com.devx.raju.data.remote.model.GithubApiResponse
+import com.devx.raju.ui.viewmodel.SyncDataWorker
 
 import javax.inject.Singleton
 
@@ -13,6 +15,7 @@ class GithubRepository(private val githubDao: GithubDao, private val githubApiSe
 
     suspend fun getRemoteData(page: Long): List<GithubEntity> {
         val resp = githubApiService.fetchRepositories(AppConstants.QUERY_SORT, AppConstants.QUERY_ORDER, page)
+        Log.i(SyncDataWorker.TAG, "Saving in DB.."+Thread.currentThread().name)
         saveApiDataToDb(resp, page)
         return resp.items!!
     }
@@ -25,7 +28,7 @@ class GithubRepository(private val githubDao: GithubDao, private val githubApiSe
             githubEntity.page = page
             githubEntity.totalPages = item.totalCount
         }
-        githubDao.insertRepositories(list!!)
+        githubDao.insertRepositories(list)
     }
 
 

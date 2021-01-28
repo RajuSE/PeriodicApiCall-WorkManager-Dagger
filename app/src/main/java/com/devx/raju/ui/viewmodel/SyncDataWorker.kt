@@ -18,11 +18,11 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
     companion object {
         val TAG = "DDD"
     }
-
-    override fun doWork(): Result = runBlocking {
+//runs on worker thread
+    override fun doWork(): Result = runBlocking {//worker thread
 
         val applicationContext = applicationContext
-        Log.i(TAG, "Fetching Data from Remote host " + (repository == null).toString())
+        Log.i(TAG, "Fetching Data from Remote host " + (repository == null).toString()+getThreadName())
 
 
         val sharedPreferences = applicationContext.getSharedPreferences("git", Context.MODE_PRIVATE)
@@ -35,7 +35,7 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
                 val d = withContext(CoroutineScope(kotlin.coroutines.coroutineContext).coroutineContext) {
                     runCatching {
                         repository.getRemoteData(page)
-                        Log.i(TAG, "fetching finished")
+                        Log.i(TAG, "fetching finished"+getThreadName())
                         sharedPreferences.edit().putLong("page", page).commit()
 
 
@@ -50,7 +50,7 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
                 }
 
                 val let: Result = d?.let {
-                    Log.i(TAG, "fetching SUCCESS")
+                    Log.i(TAG, "fetching SUCCESS"+getThreadName())
                     WorkerUtils.makeStatusNotification("New Data for Pg:"+page, Constants.NOTIFICATION_TITLE, applicationContext);
                     return@let Result.success();
                 }
@@ -59,8 +59,8 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
                 return@async let
             }
 
-            var result = job.await()!!
-            Log.i(TAG, "fetching Returned " + result)
+            var result = job.await()
+            Log.i(TAG, "fetching Returned " + result+getThreadName())
             return@runBlocking result
         } catch (e: Exception) {
             e.printStackTrace()
@@ -72,6 +72,10 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
     override fun onStopped() {
         super.onStopped()
         Log.i(TAG, "OnStopped called for this worker")
+    }
+
+    fun getThreadName():String{
+       return " : "+Thread.currentThread().name
     }
 
 
