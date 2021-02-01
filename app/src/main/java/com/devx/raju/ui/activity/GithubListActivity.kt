@@ -53,17 +53,13 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
 
         displayLoader()
         githubListViewModel!!.fetchRepositories2()
-
-        observeData()
-
+        
         githubListViewModel!!.getOutputWorkInfo()?.observe(this, Observer<List<WorkInfo>> { listOfWorkInfo: List<WorkInfo> ->
 
             if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
                 return@Observer
             }
 
-            // We only care about the first output status.
-            // Every continuation has only one worker tagged TAG_SYNC_DATA
             val workInfo: WorkInfo = listOfWorkInfo.get(0)
 
             Log.i(SyncDataWorker.TAG, "work state:: " + workInfo.state + " sZ: " + listOfWorkInfo.size)
@@ -71,27 +67,25 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
                 Log.i(SyncDataWorker.TAG, "Received Success")
 
                 showWorkFinished()
-                githubListViewModel?.loadLocalData()
-                observeData()
+                val localdata = githubListViewModel?.loadLocalData()
+                localdata?.let {
+                    if (!it.hasObservers())
+                        it.observe(this, Observer<List<GithubEntity>> { repositories: List<GithubEntity> ->
+                            Log.i(SyncDataWorker.TAG, "Lx:" + repositories.size)
 
+                            if (githubListAdapter!!.itemCount == 0) {
+                                if (!repositories.isEmpty()) {
+                                    animateView(repositories)
+                                } else displayEmptyView()
+                            } else if (!repositories.isEmpty()) displayDataView(repositories)
+                        })
+
+                }
             } else {
                 showWorkInProgress()
             }
         })
 
-    }
-
-    private fun observeData() {
-        githubListViewModel!!.repositoryListLiveData.removeObservers(this)
-        githubListViewModel!!.repositoryListLiveData.observe(this, Observer<List<GithubEntity>> { repositories: List<GithubEntity> ->
-            Log.i(SyncDataWorker.TAG, "Lx:" + repositories.size)
-
-            if (githubListAdapter!!.itemCount == 0) {
-                if (!repositories.isEmpty()) {
-                    animateView(repositories)
-                } else displayEmptyView()
-            } else if (!repositories.isEmpty()) displayDataView(repositories)
-        })
     }
 
     private fun showWorkInProgress() {
@@ -106,27 +100,27 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
     }
 
     private fun displayLoader() {
-        binding!!.viewLoader.rootView.visibility = View.VISIBLE
+        binding.viewLoader.rootView.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
-        binding!!.viewLoader.rootView.visibility = View.GONE
+        binding.viewLoader.rootView.visibility = View.GONE
     }
 
     private fun animateView(repositories: List<GithubEntity>) {
         hideLoader()
         displayDataView(repositories)
-        binding!!.recyclerView.scheduleLayoutAnimation()
+        binding.recyclerView.scheduleLayoutAnimation()
     }
 
     private fun displayDataView(repositories: List<GithubEntity>) {
-        binding!!.viewEmpty.emptyContainer.visibility = View.GONE
+        binding.viewEmpty.emptyContainer.visibility = View.GONE
         githubListAdapter!!.setItems(repositories)
     }
 
     private fun displayEmptyView() {
         hideLoader()
-        binding!!.viewEmpty.emptyContainer.visibility = View.VISIBLE
+        binding.viewEmpty.emptyContainer.visibility = View.VISIBLE
     }
 
     override fun redirectToDetailScreen(imageView: View, titleView: View, revealView: View, languageView: View, githubEntity: GithubEntity) {

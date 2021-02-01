@@ -12,10 +12,7 @@ import javax.inject.Inject
 
 
 class GithubListViewModel @Inject constructor(githubRepository: GithubRepository, work: WorkManager) : BaseViewModel() {
-    private var currentPage = 1L
     private val repository: GithubRepository
-    private var _repositoryListLiveData = MutableLiveData<List<GithubEntity>>()
-    var repositoryListLiveData: LiveData<List<GithubEntity>> = _repositoryListLiveData
 
     var mWorkManager: WorkManager? = null
 
@@ -60,9 +57,7 @@ class GithubListViewModel @Inject constructor(githubRepository: GithubRepository
 
     }
 
-    fun loadLocalData() {
-        repositoryListLiveData = repository.getLocalData()
-    }
+    fun loadLocalData()  = repository.getLocalData()
 
 
     fun getOutputWorkInfo(): LiveData<List<WorkInfo>>? {

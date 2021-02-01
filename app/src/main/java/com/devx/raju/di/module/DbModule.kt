@@ -15,7 +15,7 @@ class DbModule {
     fun provideDatabase(application: Application): AppDatabase {
         return Room.databaseBuilder(application,
                 AppDatabase::class.java, "Github.db")
-                .allowMainThreadQueries().build()
+                .build()
     }
 
     @Provides
