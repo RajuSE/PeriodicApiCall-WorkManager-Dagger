@@ -20,9 +20,7 @@ import com.devx.raju.ui.adapter.GithubListAdapter
 import com.devx.raju.ui.custom.recyclerview.RecyclerLayoutClickListener
 import com.devx.raju.ui.viewmodel.GithubListViewModel
 import com.devx.raju.ui.viewmodel.SyncDataWorker
-import com.devx.raju.utils.AppUtils
-import com.devx.raju.utils.NavigatorUtils
-import com.devx.raju.utils.ShareUtils
+import com.devx.raju.utils.*
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
@@ -53,7 +51,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
 
         displayLoader()
         githubListViewModel!!.fetchRepositories2()
-        
+
         githubListViewModel!!.getOutputWorkInfo()?.observe(this, Observer<List<WorkInfo>> { listOfWorkInfo: List<WorkInfo> ->
 
             if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
@@ -76,7 +74,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
                             if (githubListAdapter!!.itemCount == 0) {
                                 if (!repositories.isEmpty()) {
                                     animateView(repositories)
-                                } else displayEmptyView()
+                                } else if (workInfo.state != WorkInfo.State.ENQUEUED || !InternetUtil.isConnectionOn(this)) displayEmptyView()
                             } else if (!repositories.isEmpty()) displayDataView(repositories)
                         })
 
@@ -119,6 +117,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
     }
 
     private fun displayEmptyView() {
+        if (!InternetUtil.isConnectionOn(this)) ToastUtil.showShort("No Internet", this)
         hideLoader()
         binding.viewEmpty.emptyContainer.visibility = View.VISIBLE
     }
