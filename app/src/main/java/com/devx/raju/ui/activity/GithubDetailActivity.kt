@@ -23,7 +23,7 @@ class GithubDetailActivity : AppCompatActivity() {
 
     private fun initialiseView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail)
-        githubEntity = intent.getParcelableExtra(AppConstants.INTENT_POST)
+        githubEntity = intent.getParcelableExtra(AppConstants.INTENT_POST)!!
         Picasso.get().load(githubEntity.owner?.avatarUrl)
                 .placeholder(R.drawable.ic_placeholder)
                 .into(binding.itemProfileImg)

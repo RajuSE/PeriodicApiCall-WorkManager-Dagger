@@ -26,7 +26,7 @@ class GithubListViewModel @Inject constructor(githubRepository: GithubRepository
             val periodicSyncDataWork: PeriodicWorkRequest = PeriodicWorkRequest.Builder(SyncDataWorker::class.java, 15, TimeUnit.MINUTES)
                     .addTag(TAG_SYNC_DATA)
                     .setConstraints(constraints) // setting a backoff on case the work needs to retry
-                    .setBackoffCriteria(BackoffPolicy.LINEAR, PeriodicWorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
+                    .setBackoffCriteria(BackoffPolicy.LINEAR, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                     .build()
             mWorkManager?.enqueueUniquePeriodicWork(
                     SYNC_DATA_WORK_NAME,

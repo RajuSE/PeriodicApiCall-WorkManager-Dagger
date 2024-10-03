@@ -9,6 +9,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
@@ -50,9 +51,9 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         binding.recyclerView.adapter = githubListAdapter
 
         displayLoader()
-        githubListViewModel!!.fetchRepositories2()
+        githubListViewModel?.fetchRepositories2()
 
-        githubListViewModel!!.getOutputWorkInfo()?.observe(this, Observer<List<WorkInfo>> { listOfWorkInfo: List<WorkInfo> ->
+        githubListViewModel?.getOutputWorkInfo()?.observe(this, Observer<List<WorkInfo>> { listOfWorkInfo: List<WorkInfo> ->
 
             if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
                 return@Observer
@@ -93,7 +94,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
     }
 
     private fun initialiseViewModel() {
-        githubListViewModel = ViewModelProviders.of(this, viewModelFactory).get(GithubListViewModel::class.java)
+//        githubListViewModel = ViewModelProvider(this, viewModelFactory).get(GithubListViewModel::class.java)
 
     }
 
