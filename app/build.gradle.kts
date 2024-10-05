@@ -100,8 +100,19 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
 
     /* Android Architecture Component - Room Persistence Lib  */
-    implementation("androidx.room:room-runtime:2.0.0")
-//    kapt("androidx.room:room-compiler:2.0.0")
+    implementation("androidx.room:room-runtime:2.5.1")
+//    annotationProcessor("androidx.room:room-compiler:2.2.0")
+    kapt("androidx.room:room-compiler:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+
+
+
+//    implementation("android.arch.persistence.room:runtime:1.1.1")
+//    kapt("android.arch.persistence.room:compiler:1.1.1")
+//    kapt("android.arch.persistence.room:compiler:1.1.1")
+//    kapt("android.arch.persistence.room:common:1.1.1")
+//    annotationProcessor("android.arch.persistence.room:compiler:1.1.1")
+//    androidTestImplementation("android.arch.persistence.room:testing:1.1.1")
 
 
     /* Dagger2  */

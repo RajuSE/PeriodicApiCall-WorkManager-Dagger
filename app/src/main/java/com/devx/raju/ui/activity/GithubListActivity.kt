@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
@@ -23,6 +24,9 @@ import com.devx.raju.ui.viewmodel.GithubListViewModel
 import com.devx.raju.ui.viewmodel.SyncDataWorker
 import com.devx.raju.utils.*
 import dagger.android.AndroidInjection
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
@@ -67,16 +71,30 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
 
                 showWorkFinished()
                 val localdata = githubListViewModel?.loadLocalData()
+               if(localdata==null){
+                   println("null localdata")
+               }
                 localdata?.let {
                     if (!it.hasObservers())
                         it.observe(this, Observer<List<GithubEntity>> { repositories: List<GithubEntity> ->
                             Log.i(SyncDataWorker.TAG, "Lx:" + repositories.size)
 
+                            if(repositories.isEmpty()){
+                                println("emptyy no data")
+                                displayEmptyView()
+                                return@Observer
+                            }
                             if (githubListAdapter!!.itemCount == 0) {
                                 if (!repositories.isEmpty()) {
                                     animateView(repositories)
-                                } else if (workInfo.state != WorkInfo.State.ENQUEUED || !InternetUtil.isConnectionOn(this)) displayEmptyView()
-                            } else if (!repositories.isEmpty()) displayDataView(repositories)
+                                } else if (workInfo.state != WorkInfo.State.ENQUEUED || !InternetUtil.isConnectionOn(this)) {
+                                    println("displayEmptyView no data")
+                                    displayEmptyView()
+                                }
+                            } else if (!repositories.isEmpty()) displayDataView(repositories)else{
+                                println("displayEmptyView called")
+                                displayEmptyView()
+                            }
                         })
 
                 }
@@ -94,7 +112,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
     }
 
     private fun initialiseViewModel() {
-//        githubListViewModel = ViewModelProvider(this, viewModelFactory).get(GithubListViewModel::class.java)
+        githubListViewModel = ViewModelProvider(this, viewModelFactory).get(GithubListViewModel::class.java)
 
     }
 

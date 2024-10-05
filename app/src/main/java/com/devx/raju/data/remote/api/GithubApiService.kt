@@ -9,6 +9,7 @@ interface GithubApiService {
     @GET("search/repositories")
     suspend fun fetchRepositories(@Query("sort") sort: String,
                            @Query("order") order: String,
+                           @Query("q") trending: String,
                            @Query("page") page: Long): GithubApiResponse
 
 }

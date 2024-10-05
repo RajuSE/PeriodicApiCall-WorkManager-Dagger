@@ -30,7 +30,7 @@ class AppController : Application(), HasActivityInjector {
                 .build()!!
                 .inject(this)
 
-//        WorkManager.initialize(this, Configuration.Builder().setWorkerFactory(workerFactory).build())
+        WorkManager.initialize(this, Configuration.Builder().setWorkerFactory(workerFactory).build())
 
     }
 
