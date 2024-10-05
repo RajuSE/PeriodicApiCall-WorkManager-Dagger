@@ -35,10 +35,10 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
             val job = GlobalScope.async {
                 val d = withContext(CoroutineScope(kotlin.coroutines.coroutineContext).coroutineContext) {
                     runCatching {
-                        repository.getRemoteData(page)
+                        val res = repository.getRemoteData(page)
                         Log.i(TAG, "fetching finished"+getThreadName())
                         sharedPreferences.edit().putLong("page", page).commit()
-
+                        res
 
                     }
                             .getOrElse {
@@ -52,6 +52,7 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
 
                 val let: Result = d?.let {
                     Log.i(TAG, "fetching SUCCESS"+getThreadName())
+                    Log.i(TAG, "data size:"+ it.size)
                     WorkerUtils.makeStatusNotification("New Data for Pg:"+page, Constants.NOTIFICATION_TITLE, applicationContext);
                     return@let Result.success();
                 }

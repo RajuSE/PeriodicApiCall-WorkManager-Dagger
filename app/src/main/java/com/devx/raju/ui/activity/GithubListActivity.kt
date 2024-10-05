@@ -1,12 +1,15 @@
 package com.devx.raju.ui.activity
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -42,6 +45,10 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         initialiseViewModel()
         initialiseView()
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0);
+        }
+
     }
 
     private fun initialiseView() {
@@ -66,7 +73,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
             val workInfo: WorkInfo = listOfWorkInfo.get(0)
 
             Log.i(SyncDataWorker.TAG, "work state:: " + workInfo.state + " sZ: " + listOfWorkInfo.size)
-            if (workInfo.state == WorkInfo.State.ENQUEUED) {
+            if (workInfo.state == WorkInfo.State.ENQUEUED||workInfo.state == WorkInfo.State.SUCCEEDED) {
                 Log.i(SyncDataWorker.TAG, "Received Success")
 
                 showWorkFinished()

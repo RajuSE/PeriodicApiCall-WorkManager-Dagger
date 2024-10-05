@@ -28,18 +28,18 @@ class GithubListViewModel @Inject constructor(githubRepository: GithubRepository
                     .setConstraints(constraints) // setting a backoff on case the work needs to retry
                     .setBackoffCriteria(BackoffPolicy.LINEAR, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                     .build()
-//            mWorkManager?.enqueueUniquePeriodicWork(
-//                    SYNC_DATA_WORK_NAME,
-//                    ExistingPeriodicWorkPolicy.KEEP,  //Existing Periodic Work policy
-//                    periodicSyncDataWork //work request
-//            )
+            mWorkManager?.enqueueUniquePeriodicWork(
+                    SYNC_DATA_WORK_NAME,
+                    ExistingPeriodicWorkPolicy.KEEP,  //Existing Periodic Work policy
+                    periodicSyncDataWork //work request
+            )
 
-        val downloadWork = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
-            .addTag(TAG_SYNC_DATA)
-            .keepResultsForAtLeast(0, TimeUnit.SECONDS)
-            .build()
-            Log.i(SyncDataWorker.TAG, "launching work")
-        mWorkManager!!.enqueue(downloadWork)
+//        val downloadWork = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
+//            .addTag(TAG_SYNC_DATA)
+//            .keepResultsForAtLeast(0, TimeUnit.SECONDS)
+//            .build()
+//            Log.i(SyncDataWorker.TAG, "launching work")
+//        mWorkManager!!.enqueue(downloadWork)
         /*if (false) {
             repositoryListLiveData = repository.getLocalData(currentPage)
             return
