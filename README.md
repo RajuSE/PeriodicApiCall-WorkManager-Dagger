@@ -13,9 +13,13 @@ This project is WorkManager, Dagger2, Room, SharedElementTransition, DataSync
  - Repository details screen with no of stars,watcher,forks,profile pic dtails
  - Shared elements transition
 
-# Preview
+# Preview 
 
 Checkout Video below:
+
+
+https://github.com/user-attachments/assets/5dc6efd4-b47f-48b2-a44e-3e8168421b53
+
 
 
 
