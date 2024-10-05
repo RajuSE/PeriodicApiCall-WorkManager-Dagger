@@ -2,8 +2,7 @@
 
 [![WorkmanagerGithubTrending CI/CD](https://github.com/RajuSE/PeriodicApiCall-WorkManager-Dagger/actions/workflows/WorkManagerGithubCICD.yml/badge.svg)](https://github.com/RajuSE/PeriodicApiCall-WorkManager-Dagger/actions/workflows/WorkManagerGithubCICD.yml)
 
-This project is WorkManager, Dagger2, Room, SharedElementTransition, DataSync
-
+Make periodic🕦 api call with WorkManager👷‍♂️ in MVVM, Dagger🗡️ & Coroutine style⏩. Syncs every 15mins even though Device📴 restarts/app process closed🔌. Load data with Single-Source-Truth principal✅
 
 # Functionality
  - Make api call every 15 mins even when app is closed
