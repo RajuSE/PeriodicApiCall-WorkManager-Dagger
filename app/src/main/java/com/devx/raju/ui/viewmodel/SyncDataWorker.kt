@@ -16,10 +16,11 @@ class SyncDataWorker(appContext: Context, workerParams: WorkerParameters, val re
 ) : Worker(appContext, workerParams) {
 
     companion object {
-        val TAG = "DDD"
+        val TAG = "DDDWORK"
     }
 //runs on worker thread
-    override fun doWork(): Result = runBlocking {//worker thread
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun doWork(): Result  = runBlocking {//worker thread
 
         val applicationContext = applicationContext
         Log.i(TAG, "Fetching Data from Remote host " + (repository == null).toString()+getThreadName())

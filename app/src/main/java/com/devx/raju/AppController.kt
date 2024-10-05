@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.devx.raju.data.local.AppDatabase
 import com.devx.raju.di.component.DaggerAppComponent
 import com.devx.raju.ui.viewmodel.DaggerWorkerFactory
 import dagger.android.DispatchingAndroidInjector

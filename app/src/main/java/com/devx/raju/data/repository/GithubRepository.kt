@@ -14,7 +14,7 @@ import javax.inject.Singleton
 class GithubRepository(private val githubDao: GithubDao, private val githubApiService: GithubApiService) {
 
     suspend fun getRemoteData(page: Long): List<GithubEntity> {
-        val resp = githubApiService.fetchRepositories(AppConstants.QUERY_SORT, AppConstants.QUERY_ORDER, page)
+        val resp = githubApiService.fetchRepositories(AppConstants.QUERY_SORT, AppConstants.QUERY_ORDER, "trending", page)
         Log.i(SyncDataWorker.TAG, "Saving in DB.."+Thread.currentThread().name)
         saveApiDataToDb(resp, page)
         return resp.items!!
