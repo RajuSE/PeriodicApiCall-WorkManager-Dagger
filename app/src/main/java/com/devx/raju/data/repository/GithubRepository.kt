@@ -22,7 +22,7 @@ class GithubRepository(private val githubDao: GithubDao, private val githubApiSe
 
     fun getLocalData() = githubDao.getRepositories()
 
-    fun saveApiDataToDb(item: GithubApiResponse, page: Long) {
+    private fun saveApiDataToDb(item: GithubApiResponse, page: Long) {
         var list = item.items
         for (githubEntity in list!!) {
             githubEntity.page = page
