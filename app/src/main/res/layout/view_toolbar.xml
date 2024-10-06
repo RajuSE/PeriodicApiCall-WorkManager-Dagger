@@ -17,8 +17,7 @@
         app:contentInsetRight="0dp"
         app:titleMarginStart="0dp"
         app:contentPaddingRight="0dp"
-        android:paddingRight="0dp"
-        android:layout_marginLeft="0dp"
+        android:paddingEnd="0dp"
         android:layout_marginStart="0dp">
 
         <androidx.appcompat.widget.AppCompatTextView

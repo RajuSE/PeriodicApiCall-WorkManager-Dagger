@@ -1,12 +1,10 @@
 package com.devx.raju.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.work.*
-import com.devx.raju.data.local.entity.GithubEntity
 import com.devx.raju.data.repository.GithubRepository
 import com.devx.raju.ui.viewmodel.Constants.SYNC_DATA_WORK_NAME
+import com.devx.raju.ui.workers.SyncDataWorker
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -23,7 +21,8 @@ class GithubListViewModel @Inject constructor(githubRepository: GithubRepository
             val constraints: Constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
-            val periodicSyncDataWork: PeriodicWorkRequest = PeriodicWorkRequest.Builder(SyncDataWorker::class.java, 15, TimeUnit.MINUTES)
+            val periodicSyncDataWork: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
+                SyncDataWorker::class.java, 15, TimeUnit.MINUTES)
                     .addTag(TAG_SYNC_DATA)
                     .setConstraints(constraints) // setting a backoff on case the work needs to retry
                     .setBackoffCriteria(BackoffPolicy.LINEAR, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)

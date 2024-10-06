@@ -1,7 +1,7 @@
 package com.devx.raju.di.module
 
 import com.devx.raju.ui.viewmodel.ChildWorkerFactory
-import com.devx.raju.ui.viewmodel.SyncDataWorker
+import com.devx.raju.ui.workers.SyncDataWorker
 import com.devx.raju.ui.viewmodel.WorkerKey
 import dagger.Binds
 import dagger.Component

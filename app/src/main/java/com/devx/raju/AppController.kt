@@ -7,16 +7,24 @@ import androidx.work.WorkManager
 import com.devx.raju.data.local.AppDatabase
 import com.devx.raju.di.component.DaggerAppComponent
 import com.devx.raju.ui.viewmodel.DaggerWorkerFactory
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
+//import dagger.android.HasActivityInjector
 import javax.inject.Inject
 
-class AppController : Application(), HasActivityInjector {
-    @JvmField
-    @Inject
-    var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>? = null
-    override fun activityInjector(): DispatchingAndroidInjector<Activity> {
-        return dispatchingAndroidInjector!!
+class AppController : DaggerApplication() {
+//    @Inject
+//    lateinit var dispatchingAndroidInjector: AndroidInjector<Activity>
+//    override fun androidInjector(): AndroidInjector<Activity> {
+//        return dispatchingAndroidInjector!!
+//    }
+
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerAppComponent.builder()
+            .application(this)!!
+            .build()!!
     }
 
     @Inject lateinit var workerFactory: DaggerWorkerFactory
