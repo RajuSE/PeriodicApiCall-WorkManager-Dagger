@@ -62,7 +62,7 @@ class GithubListViewModel @Inject constructor(private val githubRepository: Gith
 
 //TESTING FLOW behaviour with Lifecycle and multiple onetime tasks
 
-            delay(30000)
+           /* delay(30000)
 
             val onetimeTask2 = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
                 .addTag(TAG_SYNC_DATA)
@@ -80,7 +80,7 @@ class GithubListViewModel @Inject constructor(private val githubRepository: Gith
                 .build()
             mWorkManager.enqueue(onetimeTask3)
 
-            Log.i(SyncDataWorker.TAG, "launching work3")
+            Log.i(SyncDataWorker.TAG, "launching work3")*/
         }
 
     }
