@@ -6,15 +6,14 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.res.colorResource
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import com.devx.raju.R
@@ -24,13 +23,11 @@ import com.devx.raju.factory.ViewModelFactory
 import com.devx.raju.ui.adapter.GithubListAdapter
 import com.devx.raju.ui.custom.recyclerview.RecyclerLayoutClickListener
 import com.devx.raju.ui.viewmodel.GithubListViewModel
-import com.devx.raju.ui.viewmodel.SyncDataWorker
+import com.devx.raju.ui.workers.SyncDataWorker
 import com.devx.raju.utils.*
 import dagger.android.AndroidInjection
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
 
@@ -51,6 +48,8 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
 
     }
 
+
+
     private fun initialiseView() {
 
         val sharedPreferences = getSharedPreferences("git", Context.MODE_PRIVATE)
@@ -60,6 +59,7 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
         githubListAdapter = GithubListAdapter(applicationContext, this)
         binding.recyclerView.adapter = githubListAdapter
+        AppUtils.updateStatusBarColor(this, resources.getColor(R.color.colorPrimary))
 
         displayLoader()
         githubListViewModel?.fetchRepositories2()

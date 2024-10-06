@@ -80,78 +80,47 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
-    implementation("androidx.appcompat:appcompat:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.0.0")
-    implementation("com.google.android.material:material:1.0.0")
-    implementation("androidx.cardview:cardview:1.0.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
 
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
-
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
 
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
-    implementation("com.squareup.retrofit2:retrofit:2.6.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.6.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.4.0")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 
     /* Picasso lib for image loading  */
-    implementation("com.squareup.picasso:picasso:2.71828")
+    implementation(libs.picasso)
 
     /* Android Architecture Component - Room Persistence Lib  */
-    implementation("androidx.room:room-runtime:2.5.1")
+    implementation(libs.androidx.room.runtime)
 //    annotationProcessor("androidx.room:room-compiler:2.2.0")
-    kapt("androidx.room:room-compiler:2.5.1")
-    implementation("androidx.room:room-ktx:2.5.1")
-
-
-
-//    implementation("android.arch.persistence.room:runtime:1.1.1")
-//    kapt("android.arch.persistence.room:compiler:1.1.1")
-//    kapt("android.arch.persistence.room:compiler:1.1.1")
-//    kapt("android.arch.persistence.room:common:1.1.1")
-//    annotationProcessor("android.arch.persistence.room:compiler:1.1.1")
-//    androidTestImplementation("android.arch.persistence.room:testing:1.1.1")
-
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     /* Dagger2  */
-    implementation("com.google.dagger:dagger-android:2.18")
-    implementation("com.google.dagger:dagger-android-support:2.18")
-    annotationProcessor("com.google.dagger:dagger-android-processor:2.18")
-    annotationProcessor("com.google.dagger:dagger-compiler:2.18")
-    kapt("com.google.dagger:dagger-android-processor:2.18")
-    kapt("com.google.dagger:dagger-compiler:2.18")
-
-    /* Mokito  */
-//    testimplementation("org.mockito:mockito-core:$mockito_version"
-//    androidTestimplementation("org.mockito:mockito-android:$mockito_version"
-//
-//    testImplementation("junit:junit:4.12'
-//    androidTestImplementation("androidx.arch.core:core-testing:2.0.0'
-//    androidTestImplementation("androidx.test.ext:junit:1.1.1'
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0'
-//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation(libs.dagger.android)
+    implementation(libs.dagger.android.support)
+    annotationProcessor(libs.dagger.android.processor)
+    annotationProcessor(libs.dagger.compiler)
+    kapt(libs.dagger.android.processor)
+    kapt(libs.dagger.compiler)
 
     // aac dependencies
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
+    kapt(libs.androidx.lifecycle.compiler)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
-
-    // koin dependencies
-//    implementation("io.insert-koin:koin-core:3.2.0")
-//    implementation("io.insert-koin:koin-core-viewmodel:3.2.0")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     //for coroutine new
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
 
     //workmanager
-    implementation("androidx.work:work-runtime:2.9.1")
+    implementation(libs.androidx.work.runtime)
 }

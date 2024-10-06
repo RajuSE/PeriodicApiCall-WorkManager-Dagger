@@ -63,8 +63,8 @@ object AppUtils {
         val pairs = ArrayList<Pair<View, String>>()
         pairs.add(Pair<View, String>(imageView, context.getString(R.string.transition_image)))
         pairs.add(Pair<View, String>(titleView, context.getString(R.string.transition_title)))
-        if (revealView.visibility == View.VISIBLE) Pair<Any?, Any?>(revealView, context.getString(R.string.transition_background))
-        if (languageView.visibility == View.VISIBLE) Pair<Any?, Any?>(languageView, context.getString(R.string.transition_language))
+        if (revealView.visibility == View.VISIBLE) pairs.add(Pair<View, String>(revealView, context.getString(R.string.transition_background)))
+        if (languageView.visibility == View.VISIBLE) pairs.add(Pair<View, String>(languageView, context.getString(R.string.transition_language)))
         var pairArr = arrayOfNulls<Pair<*, *>?>(pairs.size)
         pairArr = pairs.toArray(pairArr)
         return pairArr

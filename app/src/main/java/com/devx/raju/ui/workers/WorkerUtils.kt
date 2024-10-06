@@ -1,4 +1,4 @@
-package com.devx.raju.ui.viewmodel
+package com.devx.raju.ui.workers
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -8,13 +8,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.devx.raju.R
 import com.devx.raju.ui.activity.GithubListActivity
-import com.google.gson.Gson
+import com.devx.raju.ui.viewmodel.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 

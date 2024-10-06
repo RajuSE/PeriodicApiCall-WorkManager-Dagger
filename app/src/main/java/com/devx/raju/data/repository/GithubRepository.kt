@@ -6,7 +6,7 @@ import com.devx.raju.data.local.dao.GithubDao
 import com.devx.raju.data.local.entity.GithubEntity
 import com.devx.raju.data.remote.api.GithubApiService
 import com.devx.raju.data.remote.model.GithubApiResponse
-import com.devx.raju.ui.viewmodel.SyncDataWorker
+import com.devx.raju.ui.workers.SyncDataWorker
 
 import javax.inject.Singleton
 
