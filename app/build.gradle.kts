@@ -110,7 +110,7 @@ dependencies {
 
     // aac dependencies
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
+//    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.extensions)
     kapt(libs.androidx.lifecycle.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

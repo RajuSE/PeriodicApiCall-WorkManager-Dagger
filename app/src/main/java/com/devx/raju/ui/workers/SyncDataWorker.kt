@@ -53,7 +53,7 @@ class SyncDataWorker(
         val result = dataList?.let {
             Log.i(TAG, "fetching SUCCESS" + getThreadName())
             Log.i(TAG, "data size:" + dataList.size)
-            Log.i(TAG, "LAST DATA:" +if(dataList.isNotEmpty()) dataList.last() else "emptylist")
+            Log.i(TAG, "LAST DATA:" +if(dataList.isNotEmpty()) dataList.last().fullName else "emptylist")
             WorkerUtils.makeStatusNotification(
                 "New Data for Pg:" + page,
                 Constants.NOTIFICATION_TITLE,

@@ -42,8 +42,12 @@ class GithubDetailActivity : AppCompatActivity() {
             binding.itemImgLanguage.visibility = View.INVISIBLE
             binding.itemLanguage.visibility = View.INVISIBLE
         }
-        binding.btnShare.setOnClickListener { v: View? -> ShareUtils.shareUrl(this@GithubDetailActivity, githubEntity.htmlUrl) }
-        binding.btnVisit.setOnClickListener { v: View? -> NavigatorUtils.openBrowser(this@GithubDetailActivity, githubEntity.htmlUrl) }
+        binding.mainToolbar.exitBtn.visibility = View.VISIBLE
+        binding.mainToolbar.exitBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+        binding.btnShare.setOnClickListener {  ShareUtils.shareUrl(this@GithubDetailActivity, githubEntity.htmlUrl) }
+        binding.btnVisit.setOnClickListener {  NavigatorUtils.openBrowser(this@GithubDetailActivity, githubEntity.htmlUrl) }
     }
 
     private fun updateColorTheme() {

@@ -1,80 +1,109 @@
 package com.devx.raju.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.work.*
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.devx.raju.data.local.entity.GithubEntity
 import com.devx.raju.data.repository.GithubRepository
 import com.devx.raju.ui.viewmodel.Constants.SYNC_DATA_WORK_NAME
 import com.devx.raju.ui.workers.SyncDataWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class GithubListViewModel @Inject constructor(githubRepository: GithubRepository, work: WorkManager) : BaseViewModel() {
-    private val repository: GithubRepository
-
-    var mWorkManager: WorkManager? = null
+class GithubListViewModel @Inject constructor(private val githubRepository: GithubRepository, private val mWorkManager: WorkManager) : ViewModel(){
 
     val TAG_SYNC_DATA = "TAG_SYNC_DATA"
 
-
-    fun fetchRepositories2() {
+    fun fetchRepositories() {
+        viewModelScope.launch(Dispatchers.IO) {
             val constraints: Constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
             val periodicSyncDataWork: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-                SyncDataWorker::class.java, 15, TimeUnit.MINUTES)
-                    .addTag(TAG_SYNC_DATA)
-                    .setConstraints(constraints) // setting a backoff on case the work needs to retry
-                    .setBackoffCriteria(BackoffPolicy.LINEAR, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
-                    .build()
-            mWorkManager?.enqueueUniquePeriodicWork(
-                    SYNC_DATA_WORK_NAME,
-                    ExistingPeriodicWorkPolicy.KEEP,  //Existing Periodic Work policy
-                    periodicSyncDataWork //work request
+                SyncDataWorker::class.java, 15, TimeUnit.MINUTES
             )
+                .addTag(TAG_SYNC_DATA)
+                .setConstraints(constraints) // setting a backoff on case the work needs to retry
+                .setBackoffCriteria(
+                    BackoffPolicy.LINEAR,
+                    PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
+                    TimeUnit.MILLISECONDS
+                )
+                .build()
+            mWorkManager.enqueueUniquePeriodicWork(
+                SYNC_DATA_WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,  //Existing Periodic Work policy
+                periodicSyncDataWork //work request
+            )
+            Log.i(SyncDataWorker.TAG, "launching work1")
 
-//        val downloadWork = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
-//            .addTag(TAG_SYNC_DATA)
-//            .keepResultsForAtLeast(0, TimeUnit.SECONDS)
-//            .build()
-//            Log.i(SyncDataWorker.TAG, "launching work")
-//        mWorkManager!!.enqueue(downloadWork)
-        /*if (false) {
-            repositoryListLiveData = repository.getLocalData(currentPage)
-            return
-        }*/
+//            val onetimeTask = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
+//                .addTag(TAG_SYNC_DATA)
+//                .keepResultsForAtLeast(0, TimeUnit.SECONDS)
+//                .build()
+//            mWorkManager.enqueue(onetimeTask)
 
-        /*launchViewModelScope {
+//TESTING FLOW behaviour with Lifecycle and multiple onetime tasks
 
-            val d = withContext(CoroutineScope(coroutineContext).coroutineContext) {
-                runCatching { repository.getRemoteData(currentPage) }
-                        .getOrElse {
-                            onError(it)
-                            repositoryListLiveData = repository.getLocalData(currentPage)
-                            null
-                        }
-            }
-            d?.let {
-                _repositoryListLiveData.postValue(d)
-            }
-        }*/
+            delay(30000)
+
+            val onetimeTask2 = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
+                .addTag(TAG_SYNC_DATA)
+                .keepResultsForAtLeast(0, TimeUnit.SECONDS)
+                .build()
+            mWorkManager.enqueue(onetimeTask2)
+
+            Log.i(SyncDataWorker.TAG, "launching work2")
+
+            delay(30000)
+
+            val onetimeTask3 = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
+                .addTag(TAG_SYNC_DATA)
+                .keepResultsForAtLeast(0, TimeUnit.SECONDS)
+                .build()
+            mWorkManager.enqueue(onetimeTask3)
+
+            Log.i(SyncDataWorker.TAG, "launching work3")
+        }
 
     }
 
-    fun loadLocalData()  = repository.getLocalData()
+    val _stateflow = MutableStateFlow<List<GithubEntity>>(emptyList())
+    val stateFlow:Flow<List<GithubEntity>> = _stateflow.asStateFlow()
 
+    fun loadLocalData() {
+        viewModelScope.launch {
+            githubRepository.getLocalData().collectLatest {
+                _stateflow.value = it
+            }
+        }
+    }
 
-    fun getOutputWorkInfo(): LiveData<List<WorkInfo>>? {
+    fun getOutputWorkInfo(): Flow<List<WorkInfo>>? {
         return mSavedWorkInfo
     }
 
-    private var mSavedWorkInfo: LiveData<List<WorkInfo>>? = null
+    private var mSavedWorkInfo: Flow<List<WorkInfo>>? = null
 
     init {
-        repository = githubRepository//GithubRepository(githubDao!!, githubApiService!!)
-//        AppController.instance.repository = githubRepository
-        mWorkManager = work
-        mSavedWorkInfo = mWorkManager!!.getWorkInfosByTagLiveData(TAG_SYNC_DATA)
-
+        mSavedWorkInfo = mWorkManager.getWorkInfosByTagFlow(TAG_SYNC_DATA)
+        fetchRepositories()
     }
 }

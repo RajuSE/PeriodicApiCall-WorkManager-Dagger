@@ -1,8 +1,11 @@
 package com.devx.raju.data.local.dao
 
-import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.devx.raju.data.local.entity.GithubEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GithubDao {
@@ -10,5 +13,5 @@ interface GithubDao {
     fun insertRepositories(githubEntities: List<GithubEntity>): LongArray
 
     @Query("SELECT * FROM `GithubEntity`")
-    fun getRepositories(): LiveData<List<GithubEntity>>
+    fun getRepositories(): Flow<List<GithubEntity>>
 }

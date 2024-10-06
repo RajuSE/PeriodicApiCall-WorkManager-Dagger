@@ -7,13 +7,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.res.colorResource
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import com.devx.raju.R
@@ -24,8 +28,20 @@ import com.devx.raju.ui.adapter.GithubListAdapter
 import com.devx.raju.ui.custom.recyclerview.RecyclerLayoutClickListener
 import com.devx.raju.ui.viewmodel.GithubListViewModel
 import com.devx.raju.ui.workers.SyncDataWorker
-import com.devx.raju.utils.*
+import com.devx.raju.utils.AppUtils
+import com.devx.raju.utils.InternetUtil
+import com.devx.raju.utils.NavigatorUtils
+import com.devx.raju.utils.ShareUtils
+import com.devx.raju.utils.ToastUtil
 import dagger.android.AndroidInjection
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -42,12 +58,54 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         initialiseViewModel()
         initialiseView()
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0);
         }
 
-    }
+        githubListViewModel?.loadLocalData()
+        lifecycleScope.launch {
+                githubListViewModel!!.stateFlow.distinctUntilChanged { old, neww ->
+                    println("old:${old.size} _ neww:${neww.size}")
 
+                    old.size >0 && old.size == neww.size }
+                    .collectLatest { repositories: List<GithubEntity> ->
+
+                        println("inside collectLatest TH: ${Thread.currentThread().name} ${lifecycle.currentState}")
+
+                        Log.i(SyncDataWorker.TAG, "Lx:" + repositories.size)
+
+                        withContext(Dispatchers.Main) {
+                           // println("withContext called TH:${Thread.currentThread().name}")
+                            //ToastUtil.showShort("Loaded new data", this@GithubListActivity)
+
+                            if (repositories.isEmpty()) {
+                                println("emptyy no data")
+                                displayEmptyView()
+                            } else if (githubListAdapter!!.itemCount == 0) {
+                                if (!repositories.isEmpty()) {
+                                    animateView(repositories)
+                                } else {
+                                    println("displayEmptyView no data")
+                                    displayEmptyView()
+                                }
+                            } else if (repositories.isNotEmpty())
+                                displayDataView(repositories)
+                            else {
+                                println("displayEmptyView called")
+                                displayEmptyView()
+                            }
+
+
+                        }
+
+                    }
+            }
+
+    }
 
 
     private fun initialiseView() {
@@ -62,53 +120,75 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         AppUtils.updateStatusBarColor(this, resources.getColor(R.color.colorPrimary))
 
         displayLoader()
-        githubListViewModel?.fetchRepositories2()
 
-        githubListViewModel?.getOutputWorkInfo()?.observe(this, Observer<List<WorkInfo>> { listOfWorkInfo: List<WorkInfo> ->
+        githubListViewModel!!.viewModelScope.launch(Dispatchers.IO) {
 
-            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
-                return@Observer
-            }
+            githubListViewModel?.getOutputWorkInfo()
+                ?.collectLatest { listOfWorkInfo: List<WorkInfo> ->
+                    if (listOfWorkInfo.isEmpty()) {
+                        return@collectLatest
+                    }
 
-            val workInfo: WorkInfo = listOfWorkInfo.get(0)
+                    val workInfo: WorkInfo = listOfWorkInfo.first()
 
-            Log.i(SyncDataWorker.TAG, "work state:: " + workInfo.state + " sZ: " + listOfWorkInfo.size)
-            if (workInfo.state == WorkInfo.State.ENQUEUED||workInfo.state == WorkInfo.State.SUCCEEDED) {
-                Log.i(SyncDataWorker.TAG, "Received Success")
+                    Log.i(
+                        SyncDataWorker.TAG,
+                        "work state:: " + workInfo.state + " sZ: " + listOfWorkInfo.size
+                    )
+                    if (workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        Log.i(SyncDataWorker.TAG, "Received ${workInfo.state}")
 
-                showWorkFinished()
-                val localdata = githubListViewModel?.loadLocalData()
-               if(localdata==null){
-                   println("null localdata")
-               }
-                localdata?.let {
-                    if (!it.hasObservers())
-                        it.observe(this, Observer<List<GithubEntity>> { repositories: List<GithubEntity> ->
-                            Log.i(SyncDataWorker.TAG, "Lx:" + repositories.size)
 
-                            if(repositories.isEmpty()){
-                                println("emptyy no data")
-                                displayEmptyView()
-                                return@Observer
-                            }
-                            if (githubListAdapter!!.itemCount == 0) {
-                                if (!repositories.isEmpty()) {
-                                    animateView(repositories)
-                                } else if (workInfo.state != WorkInfo.State.ENQUEUED || !InternetUtil.isConnectionOn(this)) {
-                                    println("displayEmptyView no data")
-                                    displayEmptyView()
+                            println("current TH: ${Thread.currentThread().name}")
+
+                        println("lifecycle.currentState: ${lifecycle.currentState}")
+
+                        githubListViewModel?.loadLocalData()
+
+//                        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+
+                            /*localdata?.collectLatest { repositories: List<GithubEntity> ->
+                                println("inside let called TH: ${Thread.currentThread().name} ${lifecycle.currentState}")
+
+                                Log.i(SyncDataWorker.TAG, "Lx:" + repositories.size)
+
+                                withContext(Dispatchers.Main) {
+                                    println("collect called TH:${Thread.currentThread().name}")
+
+                                    ToastUtil.showShort("Loaded new data", this@GithubListActivity)
+
+                                    if (repositories.isEmpty()) {
+                                        println("emptyy no data")
+                                        displayEmptyView()
+                                    } else if (githubListAdapter!!.itemCount == 0) {
+                                        if (!repositories.isEmpty()) {
+                                            animateView(repositories)
+                                        } else if (workInfo.state != WorkInfo.State.ENQUEUED || !InternetUtil.isConnectionOn(
+                                                this@GithubListActivity
+                                            )
+                                        ) {
+                                            println("displayEmptyView no data")
+                                            displayEmptyView()
+                                        }
+                                    } else if (repositories.isNotEmpty())
+                                        displayDataView(repositories)
+                                    else {
+                                        println("displayEmptyView called")
+                                        displayEmptyView()
+                                    }
+
+
                                 }
-                            } else if (!repositories.isEmpty()) displayDataView(repositories)else{
-                                println("displayEmptyView called")
-                                displayEmptyView()
-                            }
-                        })
+                            }*/
+//                        }
+                    } else {
+                        showWorkInProgress()
+                    }
+
 
                 }
-            } else {
-                showWorkInProgress()
-            }
-        })
+        }
+
 
     }
 
@@ -119,7 +199,8 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
     }
 
     private fun initialiseViewModel() {
-        githubListViewModel = ViewModelProvider(this, viewModelFactory).get(GithubListViewModel::class.java)
+        githubListViewModel =
+            ViewModelProvider(this, viewModelFactory).get(GithubListViewModel::class.java)
 
     }
 
@@ -148,11 +229,21 @@ class GithubListActivity : AppCompatActivity(), RecyclerLayoutClickListener {
         binding.viewEmpty.emptyContainer.visibility = View.VISIBLE
     }
 
-    override fun redirectToDetailScreen(imageView: View, titleView: View, revealView: View, languageView: View, githubEntity: GithubEntity) {
-        NavigatorUtils.redirectToDetailScreen(this, githubEntity,
-                ActivityOptionsCompat.makeSceneTransitionAnimation(this, *AppUtils.getTransitionElements(
-                        applicationContext, imageView, titleView, revealView, languageView
-                ) as Array<out Pair<View, String>>))
+    override fun redirectToDetailScreen(
+        imageView: View,
+        titleView: View,
+        revealView: View,
+        languageView: View,
+        githubEntity: GithubEntity,
+    ) {
+        NavigatorUtils.redirectToDetailScreen(
+            this, githubEntity,
+            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, *AppUtils.getTransitionElements(
+                    applicationContext, imageView, titleView, revealView, languageView
+                ) as Array<out Pair<View, String>>
+            )
+        )
     }
 
     override fun sharePost(githubEntity: GithubEntity) {
