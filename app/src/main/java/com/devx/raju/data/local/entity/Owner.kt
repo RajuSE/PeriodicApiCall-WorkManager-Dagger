@@ -1,64 +1,48 @@
-package com.devx.raju.data.local.entity;
+package com.devx.raju.data.local.entity
 
-import androidx.room.Entity;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.room.Entity
+import com.google.gson.annotations.SerializedName
 
 @Entity
-public class Owner implements Parcelable {
+class Owner : Parcelable {
+    @JvmField
+    var login: String? = null
 
-    private String login;
-
+    @JvmField
     @SerializedName("avatar_url")
-    private String avatarUrl;
+    var avatarUrl: String? = null
 
-    public String getLogin() {
-        return login;
+
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(this.login)
+        dest.writeString(this.avatarUrl)
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    constructor()
+
+    protected constructor(`in`: Parcel) {
+        this.login = `in`.readString()
+        this.avatarUrl = `in`.readString()
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Owner> = object : Parcelable.Creator<Owner> {
+            override fun createFromParcel(source: Parcel): Owner {
+                return Owner(source)
+            }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.login);
-        dest.writeString(this.avatarUrl);
-    }
-
-    public Owner() {
-    }
-
-    protected Owner(Parcel in) {
-        this.login = in.readString();
-        this.avatarUrl = in.readString();
-    }
-
-    public static final Creator<Owner> CREATOR = new Creator<Owner>() {
-        @Override
-        public Owner createFromParcel(Parcel source) {
-            return new Owner(source);
+            override fun newArray(size: Int): Array<Owner?> {
+                return arrayOfNulls(size)
+            }
         }
+    }
 
-        @Override
-        public Owner[] newArray(int size) {
-            return new Owner[size];
-        }
-    };
+
 }

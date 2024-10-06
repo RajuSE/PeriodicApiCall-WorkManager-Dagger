@@ -1,223 +1,119 @@
-package com.devx.raju.data.local.entity;
+package com.devx.raju.data.local.entity
 
-import androidx.room.Embedded;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-import android.os.Parcel;
-import android.os.Parcelable;
-import androidx.annotation.NonNull;
-
-import com.devx.raju.data.local.converter.TimestampConverter;
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.devx.raju.data.local.converter.TimestampConverter
+import com.google.gson.annotations.SerializedName
 
 @Entity
-public class GithubEntity implements Parcelable {
-
-    @NonNull
+class GithubEntity : Parcelable {
+    @JvmField
     @PrimaryKey
-    private Long id;
+    var id: Long = 0L
 
-    private Long page;
+    @JvmField
+    var page: Long? = null
 
-    private Long totalPages;
+    @JvmField
+    var totalPages: Long? = null
 
-    private String name;
+    @JvmField
+    var name: String? = null
 
+    @JvmField
     @SerializedName("full_name")
-    private String fullName;
+    var fullName: String? = null
 
+    @JvmField
     @Embedded
-    private Owner owner;
+    var owner: Owner? = null
 
+    @JvmField
     @SerializedName("html_url")
-    private String htmlUrl;
+    var htmlUrl: String? = null
 
-    private String description;
+    @JvmField
+    var description: String? = null
 
+    @JvmField
     @SerializedName("contributors_url")
-    private String contributorsUrl;
+    var contributorsUrl: String? = null
 
-    @TypeConverters(TimestampConverter.class)
+    @JvmField
+    @TypeConverters(TimestampConverter::class)
     @SerializedName("created_at")
-    private String createdAt;
+    var createdAt: String? = null
 
+    @JvmField
     @SerializedName("stargazers_count")
-    private Long starsCount;
+    var starsCount: Long? = null
 
-    private Long watchers;
-    private Long forks;
-    private String language;
+    @JvmField
+    var watchers: Long? = null
+    @JvmField
+    var forks: Long? = null
+    @JvmField
+    var language: String? = null
 
-    @NonNull
-    public Long getId() {
-        return id;
+    val isLastPage: Boolean
+        get() = page!! >= totalPages!!
+
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public void setId(@NonNull Long id) {
-        this.id = id;
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeValue(this.id)
+        dest.writeValue(this.page)
+        dest.writeValue(this.totalPages)
+        dest.writeString(this.name)
+        dest.writeString(this.fullName)
+        dest.writeParcelable(this.owner, flags)
+        dest.writeString(this.htmlUrl)
+        dest.writeString(this.description)
+        dest.writeString(this.contributorsUrl)
+        dest.writeString(this.createdAt)
+        dest.writeValue(this.starsCount)
+        dest.writeValue(this.watchers)
+        dest.writeValue(this.forks)
+        dest.writeString(this.language)
     }
 
-    public Long getPage() {
-        return page;
+    constructor()
+
+    protected constructor(`in`: Parcel) {
+        this.id = (`in`.readValue(Long::class.java.classLoader) as Long?)!!
+        this.page = `in`.readValue(Long::class.java.classLoader) as Long?
+        this.totalPages = `in`.readValue(Long::class.java.classLoader) as Long?
+        this.name = `in`.readString()
+        this.fullName = `in`.readString()
+        this.owner = `in`.readParcelable(Owner::class.java.classLoader)
+        this.htmlUrl = `in`.readString()
+        this.description = `in`.readString()
+        this.contributorsUrl = `in`.readString()
+        this.createdAt = `in`.readString()
+        this.starsCount = `in`.readValue(Long::class.java.classLoader) as Long?
+        this.watchers = `in`.readValue(Long::class.java.classLoader) as Long?
+        this.forks = `in`.readValue(Long::class.java.classLoader) as Long?
+        this.language = `in`.readString()
     }
 
-    public void setPage(Long page) {
-        this.page = page;
-    }
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<GithubEntity?> = object : Parcelable.Creator<GithubEntity?> {
+            override fun createFromParcel(source: Parcel): GithubEntity? {
+                return GithubEntity(source)
+            }
 
-    public Long getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(Long totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
-    public String getHtmlUrl() {
-        return htmlUrl;
-    }
-
-    public void setHtmlUrl(String htmlUrl) {
-        this.htmlUrl = htmlUrl;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getContributorsUrl() {
-        return contributorsUrl;
-    }
-
-    public void setContributorsUrl(String contributorsUrl) {
-        this.contributorsUrl = contributorsUrl;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Long getStarsCount() {
-        return starsCount;
-    }
-
-    public void setStarsCount(Long starsCount) {
-        this.starsCount = starsCount;
-    }
-
-    public Long getWatchers() {
-        return watchers;
-    }
-
-    public void setWatchers(Long watchers) {
-        this.watchers = watchers;
-    }
-
-    public Long getForks() {
-        return forks;
-    }
-
-    public void setForks(Long forks) {
-        this.forks = forks;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public boolean isLastPage() {
-        return getPage() >= getTotalPages();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeValue(this.page);
-        dest.writeValue(this.totalPages);
-        dest.writeString(this.name);
-        dest.writeString(this.fullName);
-        dest.writeParcelable(this.owner, flags);
-        dest.writeString(this.htmlUrl);
-        dest.writeString(this.description);
-        dest.writeString(this.contributorsUrl);
-        dest.writeString(this.createdAt);
-        dest.writeValue(this.starsCount);
-        dest.writeValue(this.watchers);
-        dest.writeValue(this.forks);
-        dest.writeString(this.language);
-    }
-
-    public GithubEntity() {
-    }
-
-    protected GithubEntity(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.page = (Long) in.readValue(Long.class.getClassLoader());
-        this.totalPages = (Long) in.readValue(Long.class.getClassLoader());
-        this.name = in.readString();
-        this.fullName = in.readString();
-        this.owner = in.readParcelable(Owner.class.getClassLoader());
-        this.htmlUrl = in.readString();
-        this.description = in.readString();
-        this.contributorsUrl = in.readString();
-        this.createdAt = in.readString();
-        this.starsCount = (Long) in.readValue(Long.class.getClassLoader());
-        this.watchers = (Long) in.readValue(Long.class.getClassLoader());
-        this.forks = (Long) in.readValue(Long.class.getClassLoader());
-        this.language = in.readString();
-    }
-
-    public static final Creator<GithubEntity> CREATOR = new Creator<GithubEntity>() {
-        @Override
-        public GithubEntity createFromParcel(Parcel source) {
-            return new GithubEntity(source);
+            override fun newArray(size: Int): Array<GithubEntity?> {
+                return arrayOfNulls(size)
+            }
         }
+    }
 
-        @Override
-        public GithubEntity[] newArray(int size) {
-            return new GithubEntity[size];
-        }
-    };
+
 }

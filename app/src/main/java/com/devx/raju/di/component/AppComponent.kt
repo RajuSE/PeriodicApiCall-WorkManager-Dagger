@@ -1,47 +1,33 @@
-package com.devx.raju.di.component;
+package com.devx.raju.di.component
 
-import android.app.Application;
+import android.app.Application
+import com.devx.raju.AppController
+import com.devx.raju.di.module.ActivityModule
+import com.devx.raju.di.module.ApiModule
+import com.devx.raju.di.module.DbModule
+import com.devx.raju.di.module.RepositoryModule
+import com.devx.raju.di.module.ViewModelModule
+import com.devx.raju.di.module.WorkModule
+import com.devx.raju.di.module.WorkerModule
+import dagger.BindsInstance
+import dagger.Component
+import dagger.android.AndroidInjectionModule
+import dagger.android.AndroidInjector
+import javax.inject.Singleton
 
-import com.devx.raju.AppController;
-import com.devx.raju.di.module.ActivityModule;
-import com.devx.raju.di.module.ApiModule;
-import com.devx.raju.di.module.DbModule;
-import com.devx.raju.di.module.RepositoryModule;
-import com.devx.raju.di.module.ViewModelModule;
-import com.devx.raju.di.module.WorkModule;
-import com.devx.raju.di.module.WorkerModule;
-
-import javax.inject.Singleton;
-
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import dagger.android.AndroidInjector;
-import dagger.android.support.AndroidSupportInjectionModule;
-
-
-@Component(modules = {
-        ApiModule.class,
-        DbModule.class,
-        WorkModule.class,
-        RepositoryModule.class,
-        ViewModelModule.class,
-        ActivityModule.class,
-        WorkerModule.class,
-        AndroidInjectionModule.class})
+@Component(
+    modules = [ApiModule::class, DbModule::class, WorkModule::class, RepositoryModule::class, ViewModelModule::class, ActivityModule::class, WorkerModule::class, AndroidInjectionModule::class]
+)
 @Singleton
-public interface AppComponent extends AndroidInjector<AppController> {
-
-
+interface AppComponent : AndroidInjector<AppController> {
     @Component.Builder
     interface Builder {
-
         @BindsInstance
-        Builder application(Application application);
+        fun application(application: Application): Builder
 
-        AppComponent build();
+        fun build(): AppComponent
     }
 
 
-    void inject(AppController appController);
+    override fun inject(appController: AppController)
 }

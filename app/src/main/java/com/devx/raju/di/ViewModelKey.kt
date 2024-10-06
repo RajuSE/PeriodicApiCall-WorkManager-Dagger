@@ -1,17 +1,16 @@
-package com.devx.raju.di;
+package com.devx.raju.di
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
+import dagger.MapKey
+import kotlin.reflect.KClass
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import dagger.MapKey;
-
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@Retention(
+    AnnotationRetention.RUNTIME
+)
 @MapKey
-public @interface ViewModelKey {
-    Class<? extends ViewModel> value();
-}
+annotation class ViewModelKey(val value: KClass<out ViewModel>)

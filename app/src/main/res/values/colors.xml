@@ -7,14 +7,14 @@
     <color name="ghost_white">#F9F9FB</color>
 
     <color name="item_color_title">#060606</color>
-    <color name="item_color_time">#bfbfbf</color>
-    <color name="item_color_desc">#ababab</color>
+    <color name="item_color_time">#504D4D</color>
+    <color name="item_color_desc">#5E5959</color>
     <color name="item_color_like">#676767</color>
     <color name="item_color_shadow">#c9f2f3</color>
-    <color name="item_color_stars">#76b5ff</color>
-    <color name="item_color_watchers">#ffdd00</color>
-    <color name="item_color_forks">#a07aea</color>
-    <color name="item_color_star_text">#a2b4ca</color>
+    <color name="item_color_stars">#064186</color>
+    <color name="item_color_watchers">#B39D13</color>
+    <color name="item_color_forks">#6945AF</color>
+    <color name="item_color_star_text">#3D6391</color>
     <color name="item_color_line">#ecf2f9</color>
     <color name="bg_ripple">#66aeaeae</color>
 
